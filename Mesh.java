@@ -5,7 +5,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-public class  Mesh extends JFrame implements ActionListener {
+public class  Mesh extends JFrame implements ActionListener{
 
 
 private MeshCanvas mymesh;
@@ -28,30 +28,40 @@ private double t;
 private double time;
 private JButton start;
 private JLabel label;
+private JMenu menu;
+private JMenu select;
+//private JMenu firstImage;
+//private JMenu secondImage;
+private JMenu size;
+private JMenuItem five;
+private String[] images;
+private JMenuBar bar;
 // constructor: creates GUI
 
 public Mesh() {
 	super("Simple Mesh");
 
-	//setSize(getPreferredSize());
-	setSize(5000,1000);
+	setSize(getPreferredSize());
+	//setSize(5000,1000);
 	Container c = getContentPane();         // create container
 	c.setBackground(new Color(232, 232, 232));
 	c.setForeground(new Color(0, 0, 0));
 	c.setLayout(new BorderLayout());
 	//c.setSize(5000,1000);
 	//animateWindow.setSize(500,500);
+
+	images = new String[]{"test.jpg", "boat2.jpg"};
 	//first mesh
 	mesh = new JPanel(new FlowLayout());
 	// new canvas
 	mymesh = new MeshCanvas();
-	mymesh.setImage("test.jpg");
-	mymesh.setSize(500,500);
+	mymesh.setImage(images[0]);
+	//mymesh.setSize(500,500);
 	mesh.add(mymesh,BorderLayout.EAST);
 	// second mesh
 	newMesh = new MeshCanvas();
-	newMesh.setImage("boat2.jpg");
-	newMesh.setSize(500,500);
+	newMesh.setImage(images[1]);
+	//newMesh.setSize(500,500);
 	mesh.add(newMesh,BorderLayout.WEST);
 	time = 0;
 	t = 50;
@@ -70,6 +80,7 @@ public Mesh() {
 			System.out.println(time);
 		}
 	});
+	// repaint every 10 milliseconds
 	timer2 = new Timer(10,null);
 	timer2.addActionListener(new ActionListener() {
 		@Override
@@ -99,6 +110,20 @@ public Mesh() {
 
 		}
 	});
+	//JMenu menu = new JMenu("Menu");
+	JMenuBar bar = new JMenuBar();
+	JMenu select = new JMenu("Select");
+	JMenu firstImage = new JMenu("First Image");
+	JMenu secondImage = new JMenu("Second Image");
+	JMenu size = new JMenu("Size");
+	JMenuItem five = new JMenuItem("5");
+	select.add(firstImage);
+	select.add(secondImage);
+	size.add(five);
+	bar.add(select);
+	bar.add(size);
+	//positionP.add(bar);
+	//c.add(bar,BorderLayout.NORTH);
 	animateWindow = new JFrame();
 	animatedP = new JPanel(new FlowLayout());
 

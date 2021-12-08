@@ -25,11 +25,12 @@ public class MeshCanvas extends Canvas
 	private boolean selected;
 	private boolean firsttime;
 	private boolean showwarp = false;
-	private boolean showSelected = false;
+
 	private BufferedImage bim = null;
-	private BufferedImage bim2 = null;
+
 	private BufferedImage bimwarp = null;
-	private Triangle S, T;
+	private Triangle S;
+	private Triangle T;
 	private int xsize, ysize;
 	private int imgStart = 0;
 	private boolean isAnimate = false;
@@ -111,7 +112,7 @@ public void mouseReleased(MouseEvent E) {
 	// if a point was selected, it was just released
 	if(selected) {
 		selected = false;
-		showSelected = false;
+
 	}
 	//setSelected(false);
 	update(getGraphics());
@@ -154,9 +155,11 @@ private BufferedImage readImage(String file) {
 //	tracker.addImage(image, 1);
    try { tracker.waitForID (0); }
    catch (InterruptedException e) {}
-      BufferedImage bim = new BufferedImage 
+      BufferedImage bim = new BufferedImage
           (image.getWidth(this), image.getHeight(this), 
           BufferedImage.TYPE_INT_RGB);
+//bim=bim.getScaledInstance(500,500,Image.SCALE_SMOOTH);
+	//BufferedImage bim = new BufferedImage(500,500,BufferedImage.TYPE_INT_RGB);
    Graphics2D big = bim.createGraphics();
    big.drawImage (image, imgStart, 0, this);
    //big.drawImage (image2, image.getWidth(this), 0, this);
@@ -229,7 +232,7 @@ public void makeWarp() {
 		for(int j = 0; j<5;j++) {
 			S = new Triangle((xsize/5)*j, (ysize/5)*i, (xsize/5)*(j+1), (xsize/5)*i, (xsize/5)*j, (ysize/5)*(i+1));
 			T = new Triangle((xsize/5)*j, (ysize/5)*i, (xsize/5)*currentpointx, (ysize/5)*currentpointy, (xsize/5)*j, (ysize/5)*(i+1));
-			MorphTools.warpTriangle(bim, bimwarp, S, T, null, null, false);
+			MorphTools.warpTriangle(bim, bimwarp,S,T,null, null, false);
 
 			S = new Triangle((xsize/5)*(j+1), (ysize/5)*i,(xsize/5)*j, (ysize/5)*(i+1), (xsize/5)*(j+1), (ysize/5)*(i+1));
 			T = new Triangle((xsize/5)*(j+1), (ysize/5)*i, (xsize/5)*currentpointx, (ysize/5)*currentpointy, (xsize/5)*(j+1), (ysize/5)*(i+1));
@@ -288,13 +291,7 @@ public void paint (Graphics g) {
 		for(int i =0;i<=size;i++){
 			for(int j = 0; j<=size;j++){
 				g.setColor(Color.BLACK);
-				//x[i][j] = (xsize/5)*j;
-			//	y[i][j] = (ysize/5)*i;
-			//	g.drawLine((xsize/5)*j,(ysize/5)*i,x,y);
-				/*g.drawLine((xsize/5)*j,(ysize/5)*i,(xsize/5)*j,(ysize/5)*(i+1));
-				g.drawLine((xsize/5)*j,(ysize/5)*i,(xsize/5)*(j+1),(ysize/5)*i);
-				g.drawLine((xsize/5)*j,(ysize/5)*i,(xsize/5)*(j+1),(ysize/5)*(i+1));
-				g.fillOval((xsize/5)*j-5, (ysize/5)*i-6, 12, 12);*/
+
 				if(i!=size&&j!=size) {
 					g.drawLine(x[i][j], y[i][j], x[i + 1][j], y[i + 1][j]);
 				//	System.out.println("From ("+x[i][j]+":"+y[i][j]+") to ("+x[i+1][j]+":"+y[i+1][j]+")");
@@ -314,20 +311,11 @@ public void paint (Graphics g) {
 					g.setColor(Color.BLACK);
 					g.fillOval(x[i][j] - 5, y[i][j] - 6, 12, 12);
 				}
-				//g.fillOval(x[i][5]-5, y[i][5]-6, 12, 12);
-				//g.fillOval(x[5][j]-5, y[5][j]-6, 12, 12);
+
 			}
 
 		}
-	  /*
-	   g.drawLine(0,0,x,y);
-	   g.drawLine(0,ysize,x,y);
-	   g.drawLine(xsize,0,x,y);
-	   g.drawLine(xsize,ysize,x,y);
-	   */
 
-	   // circle at point
-	  // g.fillOval(x-6, y-6, 12, 12);
 	}
 
 }  //paint();
