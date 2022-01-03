@@ -16,21 +16,21 @@ import javax.swing.event.*;
 public class MeshCanvas extends Canvas
              implements MouseListener, MouseMotionListener {
 	//to change the number of control points, change size
-	private int size = 5;
+	private int size =21 ;
 	private int x[][] = new int[size+1][size+1];
 	private int y[][] = new int[size+1][size+1];
 	private int currentpointx;
 	private int currentpointy;
-	//private int controlpoints[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
 	private boolean selected;
 	private boolean firsttime;
 	private boolean showwarp = false;
+	private String File;
 
 	private BufferedImage bim = null;
 
 	private BufferedImage bimwarp = null;
-	private Triangle S;
-	private Triangle T;
+
+
 	private int xsize, ysize;
 	private int imgStart = 0;
 	private boolean isAnimate = false;
@@ -38,16 +38,20 @@ public class MeshCanvas extends Canvas
 	private final int THRESHOLD_DISTANCE = 4;
 
 	// constructor: creates an empty mesh point
-	public MeshCanvas() {
+	public MeshCanvas(int Size) {
 		setSize(getPreferredSize());
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		selected = false;
 		firsttime = true;
 		isAnimate = false;
-		System.out.println("Mesh");
-	}
+		size = Size;
 
+	}
+	public void setSize(int Size){
+		size = Size;
+	//	paint(getGraphics());
+	}
 
 	// resets mesh point to center
 	public void clear() {
@@ -55,8 +59,11 @@ public class MeshCanvas extends Canvas
 		firsttime = true;
 		showwarp = false;
 		drawMesh();
-	}
 
+	}
+	public void setBim(BufferedImage b){
+		bim = b;
+	}
 	public int[][] getx(){
 		//System.out.println(x);
 		return x;
@@ -146,108 +153,56 @@ public void drawMesh() {
 	repaint();
 }
 
-private BufferedImage readImage(String file) {
+public BufferedImage readImage(String file) {
 
    Image image = Toolkit.getDefaultToolkit().getImage(file);
-	//Image image2 = Toolkit.getDefaultToolkit().getImage(file2);
+	image = image.getScaledInstance(500,500,Image.SCALE_DEFAULT);
    MediaTracker tracker = new MediaTracker (new Component () {});
    tracker.addImage(image, 0);
-//	tracker.addImage(image, 1);
+
    try { tracker.waitForID (0); }
    catch (InterruptedException e) {}
       BufferedImage bim = new BufferedImage
           (image.getWidth(this), image.getHeight(this), 
           BufferedImage.TYPE_INT_RGB);
-//bim=bim.getScaledInstance(500,500,Image.SCALE_SMOOTH);
-	//BufferedImage bim = new BufferedImage(500,500,BufferedImage.TYPE_INT_RGB);
    Graphics2D big = bim.createGraphics();
    big.drawImage (image, imgStart, 0, this);
-   //big.drawImage (image2, image.getWidth(this), 0, this);
    return bim;
 }
 
 public void setImage(String file) {
+		File = file;
    bim = readImage(file);
 //   setSize(new Dimension(bim.getWidth(), bim.getHeight()));
-   imgStart = bim.getWidth();
+  // imgStart = bim.getWidth();
+	setSize(new Dimension(500,500));
 	//bim2 = readImage(file2);
-	setSize(new Dimension(bim.getWidth()/2, bim.getHeight()/2));
+//	setSize(new Dimension(bim.getWidth()/2, bim.getHeight()/2));
    this.repaint();
-}/*
-public MeshCanvas animate(){
-		for(int i = 0; i<size;i++){
-			for(int j = 0; j<size;j++){
-
-			}
-		}
-}*/
+}
+	public BufferedImage getBim(){
+		return bim;
+	}
 	public void setx(int xIn[][]){
-		for(int i = 0; i <=5; i++){
-			for(int j =0; j<=5;j++){
+		for(int i = 0; i <=size; i++){
+			for(int j =0; j<=size;j++){
 				x[i][j] = xIn[i][j];
 			}
 		}
 	}
 	public void sety(int yIn[][]){
-		for(int i = 0; i <=5; i++){
-			for(int j =0; j<=5;j++){
+		for(int i = 0; i <=size; i++){
+			for(int j =0; j<=size;j++){
 				y[i][j] = yIn[i][j];
 			}
 		}
 	}
-public void makeWarp() {
-
-	if (bimwarp == null)
-		bimwarp = new BufferedImage(bim.getWidth(this),
-				bim.getHeight(this),
-				BufferedImage.TYPE_INT_RGB);
-
-
-// Divide the image into 4 triangles defined by the one point
-// out in the image somewhere.
-// MorphTools has to be set up NOT to clear the destination image
-// each time it is called.
-	// public Triangle (int x1, int y1, int x2, int y2, int x3, int y3)
-	// top triangle
-	/*
-	S = new Triangle (0, 0, xsize/2, ysize/2, xsize, 0);
-	T = new Triangle (0, 0, x, y, xsize, 0);
-	MorphTools.warpTriangle(bim, bimwarp, S, T, null, null, false);
-	// left triangle
-	S = new Triangle (0, 0, 0, ysize, xsize/2, ysize/2);
-	T = new Triangle (0, 0, 0, ysize, x, y);
-	MorphTools.warpTriangle(bim, bimwarp, S, T, null, null, false);
-	//right triangle
-	S = new Triangle (0, ysize, xsize, ysize, xsize/2, ysize/2);
-	T = new Triangle (0, ysize, xsize, ysize, x, y);
-	MorphTools.warpTriangle(bim, bimwarp, S, T, null, null, false);
-
-	S = new Triangle (xsize, 0, xsize, ysize, xsize/2, ysize/2);
-	T = new Triangle (xsize, 0, xsize, ysize, x, y);
-	MorphTools.warpTriangle(bim, bimwarp, S, T, null, null, false);
-	*/
-
-
-	for (int i = 0; i < 5; i++) {
-		for(int j = 0; j<5;j++) {
-			S = new Triangle((xsize/5)*j, (ysize/5)*i, (xsize/5)*(j+1), (xsize/5)*i, (xsize/5)*j, (ysize/5)*(i+1));
-			T = new Triangle((xsize/5)*j, (ysize/5)*i, (xsize/5)*currentpointx, (ysize/5)*currentpointy, (xsize/5)*j, (ysize/5)*(i+1));
-			MorphTools.warpTriangle(bim, bimwarp,S,T,null, null, false);
-
-			S = new Triangle((xsize/5)*(j+1), (ysize/5)*i,(xsize/5)*j, (ysize/5)*(i+1), (xsize/5)*(j+1), (ysize/5)*(i+1));
-			T = new Triangle((xsize/5)*(j+1), (ysize/5)*i, (xsize/5)*currentpointx, (ysize/5)*currentpointy, (xsize/5)*(j+1), (ysize/5)*(i+1));
-			MorphTools.warpTriangle(bim, bimwarp, S, T, null, null, false);
-		//	this.repaint();
-		}
-	}
-	showwarp=true;
-	this.repaint();
-}
 
 // Over-ride update method 
 public void update(Graphics g) {
 	paint(g);
 }
+
 public int getCurrentx(){
 	return currentpointx;
 	}
@@ -277,7 +232,7 @@ public void paint (Graphics g) {
 	if (firsttime&&!isAnimate) {
 		for(int i = 0; i<=size;i++){
 			for(int j=0;j<=size;j++){
-				x[i][j]= (xsize/size)*j;  y[i][j] = (ysize/size)*i; firsttime=false;
+				x[i][j]= (xsize/size)*j;  y[i][j] = (ysize/size)*i; //firsttime=false;
 			}
 		}
 	}
@@ -308,8 +263,9 @@ public void paint (Graphics g) {
 					paintDot(g, currentpointx,currentpointy);
 				}
 				else{
-					g.setColor(Color.BLACK);
+					g.setColor(Color.GREEN);
 					g.fillOval(x[i][j] - 5, y[i][j] - 6, 12, 12);
+					g.setColor(Color.BLACK);
 				}
 
 			}
